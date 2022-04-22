@@ -39,6 +39,8 @@ const app = {
       utils.setAttributes(whiteKey, {
         x: whiteKeyPosX,
         "data-note-name": noteName,
+        rx: "10",
+        ry: "10",
       });
 
       text.classList.add("white-key-text");
@@ -62,7 +64,7 @@ const app = {
       const blackKey = this.createKey({
         className: "black-key",
         width: whiteKeyWidth / 2,
-        height: pianoHeight / 1.6,
+        height: pianoHeight / 1.4,
       });
       const flatNameText = utils.createSVGElement("text");
       const sharpNameText = utils.createSVGElement("text");
@@ -79,15 +81,17 @@ const app = {
             x: blackKeyPosX,
             "data-sharp-name": `${naturalSharpNoteName}#${naturalNote[1]}`,
             "data-flat-name": `${naturalFlatNoteName}b${naturalNote[1]}`,
+            rx: "8",
+            ry: "8",
           });
           utils.setAttributes(sharpNameText, {
             "text-anchor": "middle",
-            y: 215,
+            y: 240,
             x: blackKeyPosX + whiteKeyWidth / 4,
           });
           utils.setAttributes(flatNameText, {
             "text-anchor": "middle",
-            y: 235,
+            y: 260,
             x: blackKeyPosX + whiteKeyWidth / 4,
           });
 
@@ -124,7 +128,7 @@ const app = {
   // },
   createKey({ className, width, height }) {
     const key = utils.createSVGElement("rect");
-    key.classList.add(className);
+    key.classList.add(className, "key");
     utils.setAttributes(key, {
       width: width,
       height: height,
@@ -181,6 +185,27 @@ const app = {
 
     return svg;
   },
+  displayNotes(notes) {
+    const pianoKeys = document.querySelectorAll(".key");
+    utils.removeClassFromNodeCollection(pianoKeys, "show");
+
+    notes.forEach((noteName) => {
+      pianoKeys.forEach((key) => {
+        const naturalName = key.dataset.noteName;
+        const sharpName = key.dataset.sharpName;
+        const flatName = key.dataset.flatName;
+
+        if (
+          naturalName === noteName ||
+          sharpName === noteName ||
+          flatName === noteName
+        ) {
+          key.classList.add("show");
+        }
+      });
+    });
+    console.log(pianoKeys);
+  },
 };
 
 const utils = {
@@ -195,6 +220,13 @@ const utils = {
   },
   addTextContent(el, content) {
     el.textContent = content;
+  },
+  removeClassFromNodeCollection(nodeCollection, classToRemove) {
+    nodeCollection.forEach((node) => {
+      if (node.classList.contains(classToRemove)) {
+        node.classList.remove(classToRemove);
+      }
+    });
   },
 };
 
